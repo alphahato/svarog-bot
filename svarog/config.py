@@ -1,10 +1,20 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).with_name(".env"))
+
 # ─── EDIT EVERYTHING IN THIS FILE ───────────────────────────────────────
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN", "")
+if not BOT_TOKEN:
+    raise RuntimeError("Set BOT_TOKEN in svarog/.env or the process environment.")
 
 # Your Telegram numeric ID (get it from @userinfobot). Admins see /admin.
 ADMIN_IDS = [int(value.strip()) for value in os.environ.get("ADMIN_IDS", "").split(",") if value.strip()]
+if not ADMIN_IDS:
+    raise RuntimeError("Set at least one numeric ADMIN_IDS value in svarog/.env.")
 
 # WHERE THE MONEY GOES. A Solana address you control. NOT an exchange
 # deposit address (they rotate). Use a fresh Phantom wallet you own.
