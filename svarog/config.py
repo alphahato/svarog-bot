@@ -12,7 +12,15 @@ if not BOT_TOKEN:
     raise RuntimeError("Set BOT_TOKEN in svarog/.env or the process environment.")
 
 # Your Telegram numeric ID (get it from @userinfobot). Admins see /admin.
-ADMIN_IDS = [int(value.strip()) for value in os.environ.get("ADMIN_IDS", "").split(",") if value.strip()]
+_admin_ids = os.environ.get("ADMIN_IDS", "").strip()
+if _admin_ids.startswith("[") != _admin_ids.endswith("]"):
+    raise RuntimeError("ADMIN_IDS must be numeric IDs separated by commas, with optional surrounding brackets.")
+if _admin_ids.startswith("["):
+    _admin_ids = _admin_ids[1:-1]
+try:
+    ADMIN_IDS = [int(value.strip()) for value in _admin_ids.split(",") if value.strip()]
+except ValueError as exc:
+    raise RuntimeError("ADMIN_IDS must contain numeric IDs separated by commas.") from exc
 if not ADMIN_IDS:
     raise RuntimeError("Set at least one numeric ADMIN_IDS value in svarog/.env.")
 
